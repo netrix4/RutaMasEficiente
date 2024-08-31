@@ -1,17 +1,17 @@
 # Encontrar el numero aleda;o menor para moverse, no tiene que llegar en menos movimientos sino en menos costo
 # asi que eventualmente va a llegar al final sabiendo que el inicio puede ser aleatorio y el final es fijo
 
+# checar si el paso que va a dar no sea uno donde ya estuvo
+
 from random import randint
 
 tablero = []
 opcionesAledanas=[]
 movements = []
-position=[2,3]
+# position = [2,3]    #Primero y hacia abjo y luego x a la derecha
+position = [1,2]    #Primero y hacia abjo y luego x a la derecha
+meta = [11, 6]
 isOnFinalScore = False
-
-class Cursor:
-    Value = 0 
-    Cordinates = [0,0]
 
 #For random generation
 # for i in range(13):
@@ -36,7 +36,43 @@ tablero = [
     [1,-3,1,0,1,2,3,1,-2,3,3,0,3],      #13
 ]
 
-print("\nEsto es la poscision inicial: ", position)
+class Cursor:
+    Value = 0 
+    Cordinates = [0,0]
+
+def getSurroundedValues():
+    """
+    Purpose: Get cursor's surrounded values
+    """
+    posIzquierda = [] 
+    posDerecha = []
+    posSuperior = [] 
+    posInferior = []
+    
+    posIzquierda.append(tablero[position[0]][position[1]-1])
+    posIzquierda.append([position[0], position[1]-1])
+    
+    posDerecha.append(tablero[position[0]][position[1]+1])
+    posDerecha.append([position[0], position[1]+1])
+    
+    posSuperior.append(tablero[position[0]-1][position[1]])
+    posSuperior.append([position[0]-1, position[1]])
+    
+    posInferior.append(tablero[position[0]+1][position[1]])
+    posInferior.append([position[0]+1, position[1]])
+
+    # posSuperior.append(tablero[position[0]-2][position[1]-1])
+    # posSuperior.append([position[0]-2, position[1]-1])
+    # posInferior.append(tablero[position[0]][position[1]-1])
+    # posInferior.append([position[0], position[1]-1])
+    
+    opcionesAledanas.append(posIzquierda)
+    opcionesAledanas.append(posDerecha)
+    opcionesAledanas.append(posSuperior)
+    opcionesAledanas.append(posInferior)
+    print("Estoes al final de la funcion: ", opcionesAledanas)
+
+    # print("Posicion al final iteracion", position[0]+1, position[1]+1)
 print("Este es el tablero:")
 
 # simpler dash print
@@ -49,36 +85,32 @@ for i in tablero:
     print("")
 
 while not isOnFinalScore:
-    posIzquierda = [] 
-    posDerecha = []
-    posSuperior = [] 
-    posInferior = []
+    print("Posicion al Inicio iteracion", position[0]+1, position[1]+1)
     
-    posIzquierda.append(tablero[position[0]-1][position[1]-2])
-    posIzquierda.append([position[0]-1, position[1]-2])
-    
-    posDerecha.append(tablero[position[0]-1][position[1]])
-    posDerecha.append([position[0]-1, position[1]])
-    
-    posSuperior.append(tablero[position[0]-2][position[1]-1])
-    posSuperior.append([position[0]-2, position[1]-1])
-    posInferior.append(tablero[position[0]][position[1]-1])
-    posInferior.append([position[0], position[1]-1])
-    
-    opcionesAledanas.append(posIzquierda)
-    opcionesAledanas.append(posDerecha)
-    opcionesAledanas.append(posSuperior)
-    opcionesAledanas.append(posInferior)
+    getSurroundedValues()
+        
+    # print(menor)
+    menor = opcionesAledanas[0]
+    print("menor despues de calcular aledanos: ",menor)
     
     for opcion in opcionesAledanas:
-        print(opcion)
+        #Aqui evalua cual es la opcion mas barata de las 4 aledanas
+        if opcion[0] < menor[0] and (opcion not in movements):
+            menor = opcion
+            print("Nuevo menor", menor, "Con opcion: ", opcion)
     
-    if (position):
-        # isOnFinalScore = True
-        print("posiiton")
-                
-        
-    isOnFinalScore = True
+    movements.append(menor)
+    # position = [menor[1][0]+1, menor[1][1]+1]
+    position = menor[1]
+    opcionesAledanas = []
+
+    # print("este es el menor", menor)
+    
+    print("Posicion al final iteracion", position[0]+1, position[1]+1)
+    print(meta)
+    print()
+    if(position == meta): 
+        isOnFinalScore = True
 
 
 #For input by user
